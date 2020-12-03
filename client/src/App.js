@@ -1,11 +1,21 @@
 import React from 'react';
-import {Button} from "reactstrap";
+import {BrowserRouter, Route, Switch} from "react-router-dom";
+import {Home, Login} from "./pages";
+import {NavBar} from "./components";
+
 function App() {
   return (
-    <div className="App">
-        <h1>Hello React</h1>
-        <Button color="danger">Danger!</Button>
-    </div>
+      <BrowserRouter>
+          <div>
+              <NavBar />
+              <div className="container">
+                  <Switch>
+                      <Route path="/" component={Home} exact />
+                      <Route path="/login" component={Login} exact />
+                  </Switch>
+              </div>
+          </div>
+      </BrowserRouter>
   );
 }
 
