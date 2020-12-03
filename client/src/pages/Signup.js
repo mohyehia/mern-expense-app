@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Card, CardBody, CardHeader, Label} from "reactstrap";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
+import {Link} from "react-router-dom";
 
 const initialValues = {name: '', email: '', password: ''};
 const onSubmit = values => {
@@ -69,6 +70,7 @@ class Signup extends Component {
                                     }
                                 }
                             </Formik>
+                            <Link to="/login">Have an account? Login now</Link>
                         </CardBody>
                     </Card>
                 </div>

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Card, CardBody, CardHeader, Label} from 'reactstrap';
 import * as Yup from 'yup';
 import {ErrorMessage, Field, Form, Formik} from "formik";
+import {Link} from "react-router-dom";
 
 const initialValues = {email: '', password: ''};
 const onSubmit = values =>{
@@ -18,7 +19,7 @@ class Login extends Component {
             <div className="row justify-content-center">
                 <div className="mt-4 col-lg-6 col-md-8">
                     <Card>
-                        <CardHeader tag="h4">Sign in to your account</CardHeader>
+                        <CardHeader tag="h4">Login to your account</CardHeader>
                         <CardBody>
                             <Formik
                                 initialValues={initialValues}
@@ -48,6 +49,7 @@ class Login extends Component {
                                     }
                                 }
                             </Formik>
+                            <Link to="/signup">Don't have an account? Sign Up now</Link>
                         </CardBody>
                     </Card>
                 </div>
