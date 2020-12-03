@@ -16,7 +16,7 @@ class Login extends Component {
     render() {
         return (
             <div className="row justify-content-center">
-                <div className="mt-4 col-md-8">
+                <div className="mt-4 col-lg-6 col-md-8">
                     <Card>
                         <CardHeader tag="h4">Sign in to your account</CardHeader>
                         <CardBody>
