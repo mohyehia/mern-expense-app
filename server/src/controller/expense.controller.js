@@ -2,18 +2,29 @@ const Expense = require('../entity/expense.entity');
 
 exports.create = async (req, res, next) =>{
     const {amount, description, created} = req.body;
-    const newExpense = new Expense({
+    const expense = new Expense({
        amount, description, created, owner: req.userData.id
     });
-    try {
-        const saved = await newExpense.save();
-        return res.status(201).json({
-           success: true,
-           expense: saved
+    await expense.save()
+        .then(exp =>{
+            res.status(201).json({
+                message: 'Expense created successfully!',
+                createdExpense: {
+                    id: exp._id,
+                    amount: exp.amount,
+                    description: exp.description,
+                    created: exp.created,
+                    request: {
+                        type: 'GET',
+                        url: 'http://localhost:5000/expenses/' + exp._id
+                    }
+                }
+            });
+        })
+        .catch(e =>{
+            console.log(e);
+            res.status(500).json({error: e});
         });
-    } catch (e) {
-        next(e);
-    }
 }
 
 exports.findAll = async (req, res, next) =>{
@@ -27,15 +38,54 @@ exports.findAll = async (req, res, next) =>{
             $gte: firstDay,
             $lt: lastDay
         }
-    }
-    try {
-        const expenses = await Expense.find(query);
-        return res.status(200).json({
-            expenses: expenses
+    };
+    await Expense.find(query)
+        .select('_id amount description created')
+        .then(expenses =>{
+            res.status(200).json({
+               count: expenses.length,
+               expenses: expenses.map(expense =>{
+                   return {
+                       id: expense._id,
+                       amount: expense.amount,
+                       description: expense.description,
+                       created: expense.created,
+                       request: {
+                           type: 'GET',
+                           url: 'http://localhost:5000/expenses/' + expense._id
+                       }
+                   }
+               })
+            });
+        })
+        .catch(e =>{
+            console.log(e);
+            res.status(500).json({error: err});
         });
-    } catch (e) {
-        next(e);
-    }
+}
+
+exports.retrieveOneExpense = async (req, res, next) =>{
+    const id = req.params.expenseId;
+    await Expense.findById(id)
+        .select('_id amount description created')
+        .then(exp =>{
+            if(exp){
+                res.status(200).json({
+                    Expense: exp,
+                    request: {
+                        type: 'GET',
+                        description: 'Get all expenses',
+                        url: 'http://localhost:5000/expenses'
+                    }
+                });
+            }else{
+                res.status(404).json({message: 'Not Found!'});
+            }
+        })
+        .catch(err =>{
+            console.error(err);
+            res.status(500).json({error: err});
+        })
 }
 
 exports.removeById = async (req, res, next) =>{
@@ -65,12 +115,15 @@ exports.update = async (req, res, next) =>{
             err.status = 401;
             throw err;
         }
-        const expense = await Expense.update({_id: id}, {$set: {
+        await Expense.update({_id: id}, {$set: {
                 amount: req.body.amount, description: req.body.description, created: req.body.created
             }});
         return res.status(200).json({
-            success: true,
-            expense: expense
+            message: 'Expense updated successfully!',
+            request: {
+                type: 'GET',
+                url: 'http://localhost:5000/expenses/' + id
+            }
         });
     } catch (e) {
         next(e);
