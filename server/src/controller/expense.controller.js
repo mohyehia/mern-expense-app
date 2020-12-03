@@ -41,6 +41,12 @@ exports.findAll = async (req, res, next) =>{
 exports.removeById = async (req, res, next) =>{
     const id = req.params.expenseId;
     try {
+        const check = await Expense.findOne({_id: id});
+        if(!check.owner.equals(req.userData.id)){
+            const err = new Error('This expense object does not belong to u!');
+            err.status = 401;
+            throw err;
+        }
         await Expense.deleteOne({_id: id});
         return res.status(200).json({
             message: 'expense deleted successfully!'
@@ -53,6 +59,12 @@ exports.removeById = async (req, res, next) =>{
 exports.update = async (req, res, next) =>{
     const id = req.params.expenseId;
     try {
+        const check = await Expense.findOne({_id: id});
+        if(!check.owner.equals(req.userData.id)){
+            const err = new Error('This expense object does not belong to u!');
+            err.status = 401;
+            throw err;
+        }
         const expense = await Expense.update({_id: id}, {$set: {
                 amount: req.body.amount, description: req.body.description, created: req.body.created
             }});
