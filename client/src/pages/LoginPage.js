@@ -3,17 +3,44 @@ import {Card, CardBody, CardHeader, Label} from 'reactstrap';
 import * as Yup from 'yup';
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Link} from "react-router-dom";
+import {connect} from "react-redux";
+import {login} from "../actions";
 
 const initialValues = {email: '', password: ''};
-const onSubmit = values =>{
-    console.log('formValues', values);
-}
 const validationSchema = Yup.object({
     email: Yup.string().email('Invalid email address!').required('Email address is required!'),
     password: Yup.string().required('Password is required!')
 });
 
-class Login extends Component {
+class LoginPage extends Component {
+
+    componentDidUpdate() {
+        const {error, isAuth} = this.props;
+        if(error && this.actions){
+            this.actions.setSubmitting(false);
+        }
+        if(isAuth){
+            // redirect user to home page if authenticated successfully
+            this.props.history.push('/');
+        }
+    }
+
+    onSubmit = (values, actions) =>{
+        this.props.signIn(values);
+        this.actions = actions;
+    }
+
+    renderError = () =>{
+        const error = this.props.error;
+        if(error){
+            return(
+                <div className="alert alert-danger">
+                    <span>{error}</span>
+                </div>
+            );
+        }
+    }
+
     render() {
         return (
             <div className="row justify-content-center">
@@ -23,13 +50,14 @@ class Login extends Component {
                         <CardBody>
                             <Formik
                                 initialValues={initialValues}
-                                onSubmit={onSubmit}
+                                onSubmit={this.onSubmit}
                                 validationSchema={validationSchema}>
                                 {
                                     (formik) =>{
-                                        const {errors, touched, isValid, dirty} = formik;
+                                        const {errors, touched, isValid, dirty, isSubmitting} = formik;
                                         return (
                                             <Form>
+                                                {this.renderError()}
                                                 <div className="form-group">
                                                     <Label for="email">Email</Label>
                                                     <Field className={errors.email && touched.email ? 'form-control is-invalid' : 'form-control'} name="email" id="email" placeholder="someone@mail.com" />
@@ -42,7 +70,7 @@ class Login extends Component {
                                                 </div>
                                                 <hr/>
                                                 <div className="form-group">
-                                                    <button className="btn btn-primary btn-block" type="submit" disabled={!(dirty && isValid)}>Sign In</button>
+                                                    <button className="btn btn-primary btn-block" type="submit" disabled={!(dirty && isValid) || isSubmitting}>Sign In</button>
                                                 </div>
                                             </Form>
                                         );
@@ -57,5 +85,17 @@ class Login extends Component {
         );
     }
 }
-
+const mapStateToProps = state =>{
+    return {
+        attempting: state.auth.attempting,
+        error: state.auth.error,
+        isAuth: state.auth.isAuth
+    }
+}
+const mapDispatchToProps = dispatch =>{
+    return {
+        signIn: (values) => dispatch(login(values))
+    }
+}
+const Login = connect(mapStateToProps, mapDispatchToProps)(LoginPage);
 export {Login};

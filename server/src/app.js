@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const logger = require('morgan');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 const userRoutes = require('../src/routes/user.route');
 const expenseRoutes = require('../src/routes/expense.route');
 
@@ -21,6 +22,7 @@ mongoose.connection.on('error', (err) =>{
 });
 // __________________ Middleware __________________ //
 app.use(logger('dev'));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 // __________________ Routes __________________ //
