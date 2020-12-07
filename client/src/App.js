@@ -4,7 +4,8 @@ import {Home, Login, Signup} from "./pages";
 import {NavBar} from "./components";
 import {Provider} from "react-redux";
 import store from "./store";
-
+import {checkAuthentication} from "./actions";
+store.dispatch(checkAuthentication());
 function App() {
   return (
       <BrowserRouter>

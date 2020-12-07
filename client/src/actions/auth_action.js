@@ -1,4 +1,4 @@
-import {AUTH_ATTEMPTING, AUTH_FAILED, AUTH_SUCCESS} from "./types";
+import {AUTH_ATTEMPTING, AUTH_FAILED, AUTH_SUCCESS, USER_LOGOUT} from "./types";
 import {userLoginApi} from "../api/user.api";
 
 const TOKEN_NAME = 'expense_app_token';
@@ -12,6 +12,23 @@ export const login = (request_data) =>{
             .catch(err =>{
                 dispatch(loginFailed(err.response.data.message));
             });
+    }
+}
+
+export const checkAuthentication = () =>{
+    return function (dispatch) {
+        const token = localStorage.getItem(TOKEN_NAME);
+        if(token === null || token === undefined){
+            return dispatch(loginFailed('You need to login!'));
+        }
+        return dispatch(loginSuccess(token));
+    }
+}
+
+export const logout = () =>{
+    localStorage.clear();
+    return {
+        type: USER_LOGOUT
     }
 }
 
