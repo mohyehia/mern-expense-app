@@ -16,7 +16,7 @@ function NavBarComponent(props){
                         Welcome, {profile.name}
                     </DropdownToggle>
                     <DropdownMenu>
-                        <ButtonDropdown onClick={() => logOut()}>Logout</ButtonDropdown>
+                        <ButtonDropdown onClick={() => logOut()} style={{cursor: 'pointer'}}>Logout</ButtonDropdown>
                     </DropdownMenu>
                 </Dropdown>
             );
