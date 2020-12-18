@@ -5,6 +5,7 @@ import {NavBar} from "./components";
 import {Provider} from "react-redux";
 import store from "./store";
 import {checkAuthentication} from "./actions";
+import {ProtectedRoute} from "./components/ProtectedRoute";
 store.dispatch(checkAuthentication());
 function App() {
   return (
@@ -14,7 +15,7 @@ function App() {
                   <NavBar />
                   <div className="container">
                       <Switch>
-                          <Route path="/" component={Home} exact />
+                          <ProtectedRoute path="/" component={Home} exact />
                           <Route path="/login" component={Login} exact />
                           <Route path="/signup" component={Signup} exact />
                       </Switch>

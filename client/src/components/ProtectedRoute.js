@@ -1,19 +1,21 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {connect} from "react-redux";
+import {Redirect, Route} from "react-router-dom";
 
-const ProtectedRouteComponent  = () => {
+const ProtectedRouteComponent  = ({isAuth, component: Component, ...rest}) => {
         return (
-            <div>
-                Protected Route
-            </div>
+            <Route
+                {...rest}
+                render={props => isAuth ? <Component {...props}/> : <Redirect to='/login' /> }
+            />
         );
 }
 
-const mapStatsToProps = state =>{
+const mapStateToProps = state =>{
     return {
         isAuth: state.auth.isAuth
     }
 }
 
-const ProtectedRoute = connect()(ProtectedRouteComponent);
+const ProtectedRoute = connect(mapStateToProps)(ProtectedRouteComponent);
 export {ProtectedRoute};

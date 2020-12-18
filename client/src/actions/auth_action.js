@@ -10,7 +10,7 @@ export const login = (request_data) =>{
             .then(response =>{
                 const token = response.data.token;
                 setAuthHeader(token);
-                dispatch(fetchProfile())
+                dispatch(fetchProfile());
                 dispatch(loginSuccess(token));
             })
             .catch(err =>{
@@ -26,6 +26,7 @@ export const checkAuthentication = () =>{
             return dispatch(loginFailed('You need to login!'));
         }
         setAuthHeader(token);
+        dispatch(fetchProfile());
         return dispatch(loginSuccess(token));
     }
 }
