@@ -14,10 +14,10 @@ mongoose.connect(process.env.MONGO_DB_URL, {
     useCreateIndex: true,
     useUnifiedTopology: true
 });
-mongoose.connection.on('connected', () =>{
+mongoose.connection.on('connected', () => {
     console.log('connected to mongo db!');
 })
-mongoose.connection.on('error', (err) =>{
+mongoose.connection.on('error', (err) => {
     console.error(`error connecting to mongo db: ${err}`);
 });
 // __________________ Middleware __________________ //

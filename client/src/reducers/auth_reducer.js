@@ -1,4 +1,4 @@
-import {AUTH_ATTEMPTING, AUTH_FAILED, AUTH_SUCCESS, USER_LOGOUT} from "../actions/types";
+import {AUTH_ATTEMPTING, AUTH_FAILED, AUTH_SUCCESS, PROFILE_FETCHED, USER_LOGOUT} from "../actions/types";
 
 const INITIAL_STATE = {
     attempting: false,
@@ -35,6 +35,11 @@ const authReducer =(state = INITIAL_STATE, action) =>{
                 ...state,
                 isAuth: false,
                 profile: {}
+            }
+        case PROFILE_FETCHED:
+            return {
+                ...state,
+                profile: action.payload
             }
         default:
             return state;

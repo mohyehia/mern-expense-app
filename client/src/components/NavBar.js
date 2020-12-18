@@ -8,12 +8,12 @@ function NavBarComponent(props){
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const toggle = () => setDropdownOpen(prevState => !prevState);
     const renderLoginOrLogout = () =>{
-        const {isAuth, logOut} = props;
+        const {isAuth, logOut, profile} = props;
         if(isAuth){
             return (
                 <Dropdown isOpen={dropdownOpen} toggle={toggle}>
                     <DropdownToggle caret color="link" size="sm">
-                        Welcome
+                        Welcome, {profile.name}
                     </DropdownToggle>
                     <DropdownMenu>
                         <ButtonDropdown onClick={() => logOut()}>Logout</ButtonDropdown>
@@ -49,7 +49,8 @@ function NavBarComponent(props){
 
 const mapStateToProps = state =>{
     return {
-        isAuth: state.auth.isAuth
+        isAuth: state.auth.isAuth,
+        profile: state.auth.profile
     }
 }
 const mapDispatchToProps = dispatch =>{

@@ -62,6 +62,7 @@ exports.login = (req, res, next) => {
                 if (result) {
                     const token = jwt.sign({
                             email: user[0].email,
+                            name: user[0].name,
                             id: user[0]._id
                         },
                         process.env.JWT_SECRET,
@@ -82,4 +83,11 @@ exports.login = (req, res, next) => {
             console.error(err);
             res.status(500).json({error: err});
         });
+}
+
+exports.me = (req, res, next) =>{
+    const user = req.userData;
+    res.status(200).json({
+        user: user
+    });
 }
