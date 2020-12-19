@@ -1,15 +1,19 @@
 import React, {Component} from 'react';
-import {Button, Modal, ModalHeader, ModalBody, ModalFooter, Label} from 'reactstrap';
+import {Button, Label, Modal, ModalBody, ModalHeader} from 'reactstrap';
 import {connect} from "react-redux";
 import {FloatButton} from "./FloatButton";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
+import moment from "moment";
 
-const initialValues = {email: '', password: ''};
+
+const now = moment().format('YYYY-MM-DD');
+const initialValues = {amount: '', created: now};
 const validationSchema = Yup.object({
-    email: Yup.string().email('Invalid email address!').required('Email address is required!'),
-    password: Yup.string().required('Password is required!')
+    amount: Yup.number().min(1).integer().required('Please enter the expense amount!'),
+    created: Yup.date().required('Please enter the expense date!')
 });
+
 class AddFormComponent extends Component {
     constructor(props) {
         super(props);
@@ -19,7 +23,7 @@ class AddFormComponent extends Component {
         this.toggle = this.toggle.bind(this);
     }
 
-    onSubmit = (values, actions) =>{
+    onSubmit = (values, actions) => {
         console.log(values);
     }
 
@@ -41,19 +45,29 @@ class AddFormComponent extends Component {
                             onSubmit={this.onSubmit}
                             validationSchema={validationSchema}>
                             {
-                                (formik) =>{
+                                (formik) => {
                                     const {errors, touched, isValid, dirty, isSubmitting} = formik;
                                     return (
                                         <Form>
                                             <div className="form-group">
-                                                <Label for="email">Email</Label>
-                                                <Field className={errors.email && touched.email ? 'form-control is-invalid' : 'form-control'} name="email" id="email" placeholder="someone@mail.com" />
-                                                <ErrorMessage name="email" component="span" className="text-danger"/>
+                                                <Label for="amount">Amount</Label>
+                                                <Field
+                                                    className={errors.amount && touched.amount ? 'form-control is-invalid' : 'form-control'}
+                                                    name="amount" type="number" id="amount"
+                                                    placeholder="Enter Expense Amount"/>
+                                                <ErrorMessage name="amount" component="span" className="text-danger"/>
                                             </div>
                                             <div className="form-group">
-                                                <Label for="password">Password</Label>
-                                                <Field className={errors.password && touched.password ? 'form-control is-invalid' : 'form-control'} type="password" name="password" id="password" placeholder="Your Password" />
-                                                <ErrorMessage name="password" component="span" className="text-danger"/>
+                                                <Label for="created">Created</Label>
+                                                <Field
+                                                    className={errors.created && touched.created ? 'form-control is-invalid' : 'form-control'}
+                                                    type="date" name="created" id="created"
+                                                    placeholder="Enter Expense Date"/>
+                                                <ErrorMessage name="created" component="span" className="text-danger"/>
+                                            </div>
+                                            <hr/>
+                                            <div className="form-group">
+                                                <Button color="primary" type="submit" disabled={!(dirty && isValid) || isSubmitting}>Save Expense</Button>
                                             </div>
                                         </Form>
                                     );
@@ -61,10 +75,6 @@ class AddFormComponent extends Component {
                             }
                         </Formik>
                     </ModalBody>
-                    <ModalFooter>
-                        <Button color="primary" onClick={this.toggle}>Save</Button>{' '}
-                        <Button color="secondary" onClick={this.toggle}>Cancel</Button>
-                    </ModalFooter>
                 </Modal>
             </div>
         );

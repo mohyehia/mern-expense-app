@@ -7,7 +7,7 @@ function FloatButton(props) {
                 borderRadius: 50,
                 width: 60,
                 height: 60,
-                background: 'red',
+                background: '#dc3545',
                 display: 'flex',
                 flex: 1,
                 justifyContent: 'center',
