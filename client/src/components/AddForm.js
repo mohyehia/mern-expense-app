@@ -5,12 +5,15 @@ import {FloatButton} from "./FloatButton";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import moment from "moment";
+import {resetSavedFlag, saveExpense} from "../actions";
+import {ErrorMsg} from "./ErrorMessage";
 
 
 const now = moment().format('YYYY-MM-DD');
-const initialValues = {amount: '', created: now};
+const initialValues = {amount: '', description: '', created: now};
 const validationSchema = Yup.object({
     amount: Yup.number().min(1).integer().required('Please enter the expense amount!'),
+    description: Yup.string().min(3),
     created: Yup.date().required('Please enter the expense date!')
 });
 
@@ -23,8 +26,22 @@ class AddFormComponent extends Component {
         this.toggle = this.toggle.bind(this);
     }
 
+    componentDidUpdate() {
+        const {saved, error, resetSavedFlag} = this.props;
+        const {modal} = this.state;
+        if (error && this.actions) {
+            this.actions.setSubmitting(false);
+        }
+        if (saved && modal && this.actions) {
+            resetSavedFlag();
+            this.toggle();
+            this.actions.resetForm();
+        }
+    }
+
     onSubmit = (values, actions) => {
-        console.log(values);
+        this.props.saveExpense(values);
+        this.actions = actions;
     }
 
     toggle() {
@@ -49,6 +66,7 @@ class AddFormComponent extends Component {
                                     const {errors, touched, isValid, dirty, isSubmitting} = formik;
                                     return (
                                         <Form>
+                                            <ErrorMsg/>
                                             <div className="form-group">
                                                 <Label for="amount">Amount</Label>
                                                 <Field
@@ -56,6 +74,14 @@ class AddFormComponent extends Component {
                                                     name="amount" type="number" id="amount"
                                                     placeholder="Enter Expense Amount"/>
                                                 <ErrorMessage name="amount" component="span" className="text-danger"/>
+                                            </div>
+                                            <div className="form-group">
+                                                <Label for="description">Description</Label>
+                                                <Field
+                                                    className={errors.description && touched.description ? 'form-control is-invalid' : 'form-control'}
+                                                    name="description" type="text" id="description"
+                                                    placeholder="Enter Expense Description"/>
+                                                <ErrorMessage name="description" component="span" className="text-danger"/>
                                             </div>
                                             <div className="form-group">
                                                 <Label for="created">Created</Label>
@@ -67,7 +93,9 @@ class AddFormComponent extends Component {
                                             </div>
                                             <hr/>
                                             <div className="form-group">
-                                                <Button color="primary" type="submit" disabled={!(dirty && isValid) || isSubmitting}>Save Expense</Button>
+                                                <Button color="primary" type="submit"
+                                                        disabled={!(dirty && isValid) || isSubmitting}>Save
+                                                    Expense</Button>
                                             </div>
                                         </Form>
                                     );
@@ -81,5 +109,17 @@ class AddFormComponent extends Component {
     }
 }
 
-const AddForm = connect()(AddFormComponent);
+const mapStateToProps = state => {
+    return {
+        saved: state.expense.saved,
+        error: state.errors.message
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        saveExpense: (values) => dispatch(saveExpense(values)),
+        resetSavedFlag: () => dispatch(resetSavedFlag())
+    }
+}
+const AddForm = connect(mapStateToProps, mapDispatchToProps)(AddFormComponent);
 export {AddForm} ;
