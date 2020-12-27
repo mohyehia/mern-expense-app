@@ -5,6 +5,7 @@ import {ErrorMessage, Field, Form, Formik} from "formik";
 import {Link} from "react-router-dom";
 import {connect} from "react-redux";
 import {login} from "../actions";
+import {RESET_CREATED_FLAG} from "../actions/types";
 
 const initialValues = {email: '', password: ''};
 const validationSchema = Yup.object({
@@ -15,27 +16,39 @@ const validationSchema = Yup.object({
 class LoginPage extends Component {
 
     componentDidUpdate() {
-        const {error, isAuth} = this.props;
-        if(error && this.actions){
+        const {error, isAuth, resetCreatedFlag} = this.props;
+        if (error && this.actions) {
+            resetCreatedFlag();
             this.actions.setSubmitting(false);
         }
-        if(isAuth){
+        if (isAuth) {
             // redirect user to home page if authenticated successfully
             this.props.history.push('/');
         }
     }
 
-    onSubmit = (values, actions) =>{
+    onSubmit = (values, actions) => {
         this.props.signIn(values);
         this.actions = actions;
     }
 
-    renderError = () =>{
+    renderError = () => {
         const error = this.props.error;
-        if(error){
-            return(
+        if (error) {
+            return (
                 <div className="alert alert-danger">
                     <span>{error}</span>
+                </div>
+            );
+        }
+    }
+
+    renderSuccess = () => {
+        const {created, message} = this.props;
+        if (created) {
+            return (
+                <div className="alert alert-success">
+                    <span>{message}</span>
                 </div>
             );
         }
@@ -53,24 +66,34 @@ class LoginPage extends Component {
                                 onSubmit={this.onSubmit}
                                 validationSchema={validationSchema}>
                                 {
-                                    (formik) =>{
+                                    (formik) => {
                                         const {errors, touched, isValid, dirty, isSubmitting} = formik;
                                         return (
                                             <Form>
                                                 {this.renderError()}
+                                                {this.renderSuccess()}
                                                 <div className="form-group">
                                                     <Label for="email">Email</Label>
-                                                    <Field className={errors.email && touched.email ? 'form-control is-invalid' : 'form-control'} name="email" id="email" placeholder="someone@mail.com" />
-                                                    <ErrorMessage name="email" component="span" className="text-danger"/>
+                                                    <Field
+                                                        className={errors.email && touched.email ? 'form-control is-invalid' : 'form-control'}
+                                                        name="email" id="email" placeholder="someone@mail.com"/>
+                                                    <ErrorMessage name="email" component="span"
+                                                                  className="text-danger"/>
                                                 </div>
                                                 <div className="form-group">
                                                     <Label for="password">Password</Label>
-                                                    <Field className={errors.password && touched.password ? 'form-control is-invalid' : 'form-control'} type="password" name="password" id="password" placeholder="Your Password" />
-                                                    <ErrorMessage name="password" component="span" className="text-danger"/>
+                                                    <Field
+                                                        className={errors.password && touched.password ? 'form-control is-invalid' : 'form-control'}
+                                                        type="password" name="password" id="password"
+                                                        placeholder="Your Password"/>
+                                                    <ErrorMessage name="password" component="span"
+                                                                  className="text-danger"/>
                                                 </div>
                                                 <hr/>
                                                 <div className="form-group">
-                                                    <button className="btn btn-primary btn-block" type="submit" disabled={!(dirty && isValid) || isSubmitting}>Sign In</button>
+                                                    <button className="btn btn-primary btn-block" type="submit"
+                                                            disabled={!(dirty && isValid) || isSubmitting}>Sign In
+                                                    </button>
                                                 </div>
                                             </Form>
                                         );
@@ -85,16 +108,22 @@ class LoginPage extends Component {
         );
     }
 }
-const mapStateToProps = state =>{
+
+const mapStateToProps = state => {
     return {
         attempting: state.auth.attempting,
         error: state.auth.error,
-        isAuth: state.auth.isAuth
+        isAuth: state.auth.isAuth,
+        created: state.signup.created,
+        message: state.signup.message
     }
 }
-const mapDispatchToProps = dispatch =>{
+const mapDispatchToProps = dispatch => {
     return {
-        signIn: (values) => dispatch(login(values))
+        signIn: (values) => dispatch(login(values)),
+        resetCreatedFlag: () => dispatch({
+            type: RESET_CREATED_FLAG
+        })
     }
 }
 const Login = connect(mapStateToProps, mapDispatchToProps)(LoginPage);

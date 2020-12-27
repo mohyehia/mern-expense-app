@@ -23,7 +23,7 @@ export const checkAuthentication = () =>{
     return function (dispatch) {
         const token = localStorage.getItem(TOKEN_NAME);
         if(token === null || token === undefined){
-            return dispatch(loginFailed('You need to login!'));
+            return dispatch(loginFailed(''));
         }
         setAuthHeader(token);
         dispatch(fetchProfile());

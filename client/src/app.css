@@ -3,3 +3,9 @@
     background-color: #d02938;
     border-color: #b90b1e;
 }
+
+.alert-success{
+    color: #fff;
+    background-color: #8dbf42;
+    border-color: #8dbf42;
+}
