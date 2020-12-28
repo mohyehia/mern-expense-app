@@ -5,7 +5,7 @@ import {FloatButton} from "./FloatButton";
 import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import moment from "moment";
-import {resetSavedFlag, saveExpense} from "../actions";
+import {fetchExpenses, resetSavedFlag, saveExpense} from "../actions";
 import {ErrorMsg} from "./ErrorMessage";
 
 
@@ -27,7 +27,7 @@ class AddFormComponent extends Component {
     }
 
     componentDidUpdate() {
-        const {saved, error, resetSavedFlag} = this.props;
+        const {saved, error, resetSavedFlag, fetchExpenses} = this.props;
         const {modal} = this.state;
         if (error && this.actions) {
             this.actions.setSubmitting(false);
@@ -36,6 +36,7 @@ class AddFormComponent extends Component {
             resetSavedFlag();
             this.toggle();
             this.actions.resetForm();
+            fetchExpenses();
         }
     }
 
@@ -118,7 +119,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
     return {
         saveExpense: (values) => dispatch(saveExpense(values)),
-        resetSavedFlag: () => dispatch(resetSavedFlag())
+        resetSavedFlag: () => dispatch(resetSavedFlag()),
+        fetchExpenses: () => dispatch(fetchExpenses())
     }
 }
 const AddForm = connect(mapStateToProps, mapDispatchToProps)(AddFormComponent);

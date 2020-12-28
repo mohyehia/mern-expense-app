@@ -3,3 +3,4 @@ export * from './ProtectedRoute';
 export * from './FloatButton';
 export * from './AddForm';
 export * from './ErrorMessage';
+export * from './ExpenseItem';

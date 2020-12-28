@@ -40,6 +40,7 @@ exports.findAll = async (req, res, next) =>{
         }
     };
     await Expense.find(query)
+        .sort({created: 'desc'})
         .select('_id amount description created')
         .then(expenses =>{
             res.status(200).json({

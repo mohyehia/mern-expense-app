@@ -1,7 +1,15 @@
-import {EXPENSE_SAVED, RESET_SAVED_FLAG} from "../actions/types";
+import {
+    EXPENSE_SAVED,
+    EXPENSES_FETCHED_SUCCESSFULLY,
+    FETCHING_EXPENSES,
+    FETCHING_EXPENSES_FAILED,
+    RESET_SAVED_FLAG
+} from "../actions/types";
 
 const INITIAL_STATE = {
-    saved: false
+    saved: false,
+    fetching: false,
+    expenses: []
 };
 
 const expenseReducer = (state = INITIAL_STATE, action) => {
@@ -15,6 +23,22 @@ const expenseReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 saved: false
+            }
+        case FETCHING_EXPENSES:
+            return {
+                ...state,
+                fetching: true
+            }
+        case EXPENSES_FETCHED_SUCCESSFULLY:
+            return {
+                ...state,
+                fetching: false,
+                expenses: action.payload
+            }
+        case FETCHING_EXPENSES_FAILED:
+            return {
+                ...state,
+                fetching: false
             }
         default:
             return state;
