@@ -23,12 +23,15 @@ export const saveExpense = expense => {
     }
 }
 
-export const fetchExpenses = () => {
+export const fetchExpenses = (month) => {
     return async function (dispatch) {
         dispatch({
             type: FETCHING_EXPENSES
         });
-        await retrieveExpensesApi()
+        const prefix = '/expenses';
+        const url = month ? `${prefix}/${month}` : prefix;
+        console.log('url =>' + url);
+        await retrieveExpensesApi(url)
             .then(response => {
                 console.log(response.data);
                 dispatch({
