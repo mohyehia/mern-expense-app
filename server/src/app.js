@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const userRoutes = require('../src/routes/user.route');
 const expenseRoutes = require('../src/routes/expense.route');
+const path = require('path');
 
 const app = express();
 
@@ -29,3 +30,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use('/users', userRoutes);
 app.use('/expenses', expenseRoutes);
 module.exports = app;
+
+// __________________ Static Files __________________ //
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static(path.join(__dirname, '../../client/build')));
+    app.get('*', (req, res) =>{
+        res.sendFile(
+            path.resolve(__dirname, '../../client', 'build', 'index.html')
+        );
+    })
+}
