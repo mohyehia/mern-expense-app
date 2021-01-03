@@ -1,5 +1,5 @@
 import {
-    EXPENSE_SAVED,
+    EXPENSE_SAVED, EXPENSE_UPDATED,
     EXPENSES_FETCHED_SUCCESSFULLY,
     FETCHING_EXPENSES,
     FETCHING_EXPENSES_FAILED,
@@ -8,6 +8,7 @@ import {
 
 const INITIAL_STATE = {
     saved: false,
+    updated: false,
     fetching: false,
     expenses: []
 };
@@ -19,10 +20,16 @@ const expenseReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 saved: true
             }
+        case EXPENSE_UPDATED:
+            return{
+                ...state,
+                updated: true
+            }
         case RESET_SAVED_FLAG:
             return {
                 ...state,
-                saved: false
+                saved: false,
+                updated: false
             }
         case FETCHING_EXPENSES:
             return {

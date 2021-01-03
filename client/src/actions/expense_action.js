@@ -1,6 +1,6 @@
-import {retrieveExpensesApi, saveExpenseApi} from "../api/expense.api";
+import {retrieveExpensesApi, saveExpenseApi, updateExpenseApi} from "../api/expense.api";
 import {
-    EXPENSE_SAVED,
+    EXPENSE_SAVED, EXPENSE_UPDATED,
     EXPENSES_FETCHED_SUCCESSFULLY,
     FETCHING_EXPENSES,
     FETCHING_EXPENSES_FAILED,
@@ -46,6 +46,21 @@ export const fetchExpenses = (month) => {
                 })
                 dispatch(addErrorMessage(err));
             })
+    }
+}
+
+export const updateExpense = (id, expense) =>{
+    return async function(dispatch){
+        dispatch(clearErrorMessage());
+        await updateExpenseApi(id, expense)
+            .then(response => {
+                console.log(response.data);
+                dispatch({type: EXPENSE_UPDATED});
+            })
+            .catch(err => {
+                console.log(err);
+                dispatch(addErrorMessage(err));
+            });
     }
 }
 
