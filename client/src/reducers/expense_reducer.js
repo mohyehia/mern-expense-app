@@ -1,5 +1,6 @@
 import {
-    EXPENSE_SAVED, EXPENSE_UPDATED,
+    EXPENSE_SAVED,
+    EXPENSE_UPDATED,
     EXPENSES_FETCHED_SUCCESSFULLY,
     FETCHING_EXPENSES,
     FETCHING_EXPENSES_FAILED,
@@ -21,7 +22,7 @@ const expenseReducer = (state = INITIAL_STATE, action) => {
                 saved: true
             }
         case EXPENSE_UPDATED:
-            return{
+            return {
                 ...state,
                 updated: true
             }

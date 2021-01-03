@@ -3,7 +3,7 @@ import {Badge} from "reactstrap";
 import moment from "moment";
 import {Link} from "react-router-dom";
 
-const ExpenseItem = ({item}) => {
+const ExpenseItem = ({item, deleteExpense}) => {
     return (
         <tr>
             <td><Badge color='dark'>{item.amount}</Badge></td>
@@ -13,7 +13,7 @@ const ExpenseItem = ({item}) => {
                 pathname: '/edit',
                 state: {item}
             }} className='btn btn-sm btn-success'><i className='fa fa-edit'/></Link></td>
-            <td><button className='btn btn-sm btn-danger'><i className='fa fa-trash'/></button></td>
+            <td><button className='btn btn-sm btn-danger' onClick={deleteExpense} data-id={item.id}><i className='fa fa-trash'/></button></td>
         </tr>
     );
 }

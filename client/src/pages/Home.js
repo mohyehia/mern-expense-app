@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {AddForm, ExpenseItem, MonthSelector} from "../components";
 import {connect} from "react-redux";
-import {fetchExpenses} from "../actions";
+import {deleteExpense, fetchExpenses} from "../actions";
 import {Spinner, Table} from "reactstrap";
 import moment from "moment";
 
@@ -27,9 +27,15 @@ class HomePage extends Component {
         this.getExpenses();
     }
 
-    getExpenses(month){
+    getExpenses(month) {
         const {fetchExpenses} = this.props;
         fetchExpenses(month);
+    }
+
+    deleteExpense(e) {
+        const expenseId = e.currentTarget.getAttribute('data-id');
+        const {deleteExpense} = this.props;
+        deleteExpense(expenseId);
     }
 
     render() {
@@ -62,7 +68,7 @@ class HomePage extends Component {
                     <tbody className='text-center'>
                     {
                         expenses.map((item) => (
-                            <ExpenseItem item={item} key={item.id}/>
+                            <ExpenseItem item={item} key={item.id} deleteExpense={this.deleteExpense.bind(this)}/>
                         ))
                     }
                     </tbody>
@@ -82,7 +88,8 @@ const mapStateToProps = ({expense}) => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchExpenses: (month) => dispatch(fetchExpenses(month))
+        fetchExpenses: (month) => dispatch(fetchExpenses(month)),
+        deleteExpense: (id) => dispatch(deleteExpense(id))
     }
 }
 
